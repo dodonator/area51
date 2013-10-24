@@ -146,3 +146,4 @@ klartext = raw_input('Klartext: \n')
 key = raw_input('Key: \n')
 k = krypto(klartext,key)
 print k.main()
+
