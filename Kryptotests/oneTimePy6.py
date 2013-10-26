@@ -3,6 +3,8 @@ import os
 import random
 import getpass
 import time
+import datetime
+
 
 os.system('clear')
 class oneTimePad(object):
@@ -22,6 +24,24 @@ class oneTimePad(object):
 		return result
 
 	
+	def enWiKeGe(self,klartext,key):
+		NCF = noCryptoFunctions()
+		laengeKlartext = len(klartext)
+		laengeKey = len(key)
+		if laengeKlartext != laengeKey:
+			raise Exception("Error! It's very important that the input and the key have the same length.")
+		keyArray = list(key)
+		klartextArray = list(klartext)
+		alphabet = NCF.ALPHABET()
+		geheimtextArray = []
+		geheimtext = ''
+		for i in range(laengeKlartext): # Diese for-Schleife kuemmert sich um die Codierung
+			tmpKlartextIndex = alphabet.index(klartextArray[i])
+			tmpKeyIndex = alphabet.index(keyArray[i])
+			tmpG = alphabet[(tmpKlartextIndex + tmpKeyIndex) % len(alphabet)]
+			geheimtextArray.append(tmpG)
+			geheimtext += tmpG
+		return geheimtext
 
 	def encode(self,klartext):
 		'''
@@ -133,7 +153,7 @@ class noCryptoFunctions(object):
 		foldername = str(foldername) + '/' + str(ID)
 		stempel = str(datumsStempel1[1])
 		filename = self.dateiZugriffSpeichern(stempel,foldername,inhalt,typ)
-		return filename
+		return ID
 
 	def sonderzeichen(self):
 		sonderZ1 = range(32,65)
@@ -157,6 +177,31 @@ class noCryptoFunctions(object):
 			Alphabet.append(SZeichen)
 		return Alphabet
 
+def RaDeCAn(): #Random Decode Auswertung
+	OTP = oneTimePad()
+	NCF = noCryptoFunctions()
+	alphabet = NCF.ALPHABET()
+	rep = int(raw_input('Wiederholungszahl eingeben: \n'))
+	klartextLaenge = int(raw_input('Bitte die Länge des Teststrings eingeben: \n'))
+	trueCounter = 0
+	falseCounter = 0
+	for i in range(rep):
+		key = ''
+		geheimtext = ''
+		for i in range(klartextLaenge):
+			key += random.choice(alphabet)
+		for i in range(klartextLaenge):
+			geheimtext += random.choice(alphabet)
+		klartext = OTP.decode(geheimtext,key)
+		print geheimtext
+		YN = raw_input('Ergibt der zufällig erzeugte Klartext Sinn (Y/N): \n')
+		if YN == 'Y' or YN == 'y':
+			trueCounter += 1
+		elif YN == 'N' or YN == 'n':
+			falseCounter += 1
+		os.system('clear')
+	print 'Sinn:   ' + str(trueCounter)
+	print 'Unsinn: ' + str(falseCounter)
 
 def keyGen():
 	OTP = oneTimePad()
@@ -172,6 +217,28 @@ def analyse():
 	print 'True:  ' + str(Analyse[0])
 	print 'False: ' + str(Analyse[1])
 
+def esrif(): #Encoding Save Results in Files
+	OTP = oneTimePad()
+	NCF = noCryptoFunctions()
+	klartext = raw_input('Klartext eingeben: \n')
+	tmpResult = OTP.encode(klartext)
+	geheimtext = tmpResult[0]
+	key = tmpResult[1]
+	IDg = NCF.speicherRoutine(geheimtext,'g')
+	IDk = NCF.speicherRoutine(key,'s')
+	if IDg == IDk:
+		return [IDg,True]
+	else:
+		return [IDg,False] 
+
+def decoden():
+	OTP = oneTimePad()
+	geheimtext = raw_input('Geheimtext eingeben: \n')
+	key = raw_input('Key eingeben: \n')
+	tmpResult = OTP.decode(geheimtext,key)
+	print 'Klartext: '
+	print tmpResult
+
 def encoden():
 	OTP = oneTimePad()
 	klartext = raw_input('Klartext eingeben: \n')
@@ -182,23 +249,20 @@ def encoden():
 	print 'Geheimtext: ' + tmpResult[0]
 	print (12+len(tmpResult[0]))*'#'
 
-def decoden():
+def Execute_EnWiKeGo():
 	OTP = oneTimePad()
-	geheimtext = raw_input('Geheimtext eingeben: \n')
-	key = raw_input('Key eingeben: \n')
-	tmpResult = OTP.decode(geheimtext,key)
-	print 'Klartext: '
-	print tmpResult
-
+	klartext = raw_input('Klartext eingeben: \n')
+	key = raw_input('Schlüssel der Länge ' + str(len(klartext)) + ' eingeben: \n')
+	os.system('clear')
+	print (12 + len(klartext)) * '#'
+	print 'Klartext:   ' + klartext
+	print 'Schlüssel:  ' + key
+	print 'Geheimtext: ' + OTP.enWiKeGe(klartext,key)
+	print (12 + len(klartext)) * '#'
 # keyGen()
-# encoden()
+# print esrif()[0]
 # decoden()
+# encoden()
 # analyse()
-
-NCF = noCryptoFunctions()
-OTP = oneTimePad()
-chiffre = OTP.encode('Hunde')
-geheimtext = chiffre[0]
-key = chiffre[1]
-NCF.speicherRoutine(geheimtext,'g')
-NCF.speicherRoutine(key,'s')
+Execute_EnWiKeGo()
+# RaDeCAn()
