@@ -29,6 +29,7 @@ class oneTimePad(object):
 			for sonderZeichen in element:
 				sonderZeichenListe.append(str(chr(sonderZeichen)))
 		return sonderZeichenListe
+
 	def ALPHABET(self):
 		Alphabet = []
 		for i in range(26):
@@ -39,6 +40,7 @@ class oneTimePad(object):
 		for SZeichen in sonderZeichen:
 			Alphabet.append(SZeichen)
 		return Alphabet
+
 	def encode(self,klartext):
 		'''
 		Create a random One-Time-Pad and encode the input strings
@@ -62,6 +64,7 @@ class oneTimePad(object):
 			geheimtext += element
 
 		return [geheimtext,key]
+
 	def decode(self,geheimtext,key):
 		laengeGeheimtext = len(geheimtext)
 		keyArray = list(key)
@@ -83,6 +86,7 @@ class oneTimePad(object):
 			klartext += element
 
 		return klartext
+
 	def analyse(self,testString,rep):
 		OTP = oneTimePad()
 		trueCounter = 0

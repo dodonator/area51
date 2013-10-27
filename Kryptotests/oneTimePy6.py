@@ -226,11 +226,12 @@ def esrif(): #Encoding Save Results in Files
 	key = tmpResult[1]
 	IDg = NCF.speicherRoutine(geheimtext,'g')
 	IDk = NCF.speicherRoutine(key,'s')
+	os.system('clear')
 	if IDg == IDk:
-		return [IDg,True]
+		print'True! ' + str(IDg)
 	else:
-		return [IDg,False] 
-
+		print 'False! ' + str(IDg) + ' != ' + str(IDk)
+ 
 def decoden():
 	OTP = oneTimePad()
 	geheimtext = raw_input('Geheimtext eingeben: \n')
@@ -260,9 +261,9 @@ def Execute_EnWiKeGo():
 	print 'Geheimtext: ' + OTP.enWiKeGe(klartext,key)
 	print (12 + len(klartext)) * '#'
 # keyGen()
-# print esrif()[0]
-# decoden()
+# esrif()
+decoden()
 # encoden()
 # analyse()
-Execute_EnWiKeGo()
+# Execute_EnWiKeGo()
 # RaDeCAn()
