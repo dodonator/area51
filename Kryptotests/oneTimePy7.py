@@ -1,4 +1,5 @@
 #coding: utf-8
+# Aktuelle Version!
 import os
 import random
 import getpass
