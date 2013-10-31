@@ -163,8 +163,7 @@ class noCryptoFunctions(object):
 		hour = t[3]
 		minute = t[4]
 		second = t[5]
-		second = second - (second % 5) / 5
-		counter = second + (minute*60) + (hour*3600)
+		counter = minute + hour*60
 		stempel = str(year) + '-' + str(month) + '-' + str(day)
 		return [stempel,counter]
 
@@ -182,6 +181,20 @@ class noCryptoFunctions(object):
 		file1 = f1.write(inhalt)
 		f1.close()
 		return filename
+
+	def dateiZugriffLaden(self,filename):
+		f1 = open(filename,'r')
+		result = f1.read()
+		f1.close()
+		return result
+
+	def LadeRoutine(self,ID,typ,year,month,day):
+		foldername = str(year) + '-' + str(month) + '-' + str(day) + '/' + str(ID)
+		currentDirectory = os.getcwd()
+		filename = currentDirectory + '/' + foldername + '/' + typ.upper() + '--' + ID + '.' + typ
+		result = self.dateiZugriffLaden(filename)
+		return result
+
 
 	def speicherRoutine(self,inhalt,typ):
 		currentDirectory = os.getcwd()
@@ -273,12 +286,24 @@ def esrif(): #Encoding Save Results in Files
 	key = tmpResult[1]
 	IDg = NCF.speicherRoutine(geheimtext,'g')
 	IDk = NCF.speicherRoutine(key,'s')
-	os.system('clear')
+  	os.system('clear')
 	if IDg == IDk:
 		print'True! ' + str(IDg)
 	else:
 		print 'False! ' + str(IDg) + ' != ' + str(IDk)
- 
+
+def desrif():
+	OTP = oneTimePad()
+	NCF = noCryptoFunctions()
+	ID = raw_input('ID: ')
+	year = raw_input('Jahr: ')
+	month = raw_input('Monat: ')
+	day = raw_input('Tag: ')
+	geheimtext = NCF.LadeRoutine(ID,'g',year,month,day)
+	key = NCF.LadeRoutine(ID,'s',year,month,day)
+	result = OTP.decode(geheimtext,key)
+	print result
+
 def decoden():
 	OTP = oneTimePad()
 	geheimtext = raw_input('Geheimtext eingeben: \n')
@@ -325,4 +350,5 @@ def USEsteganoKrypto():
 # analyse()
 # Execute_EnWiKeGo()
 # RaDeCAn()
-USEsteganoKrypto()
+# USEsteganoKrypto()
+# desrif()
