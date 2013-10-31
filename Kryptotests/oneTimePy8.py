@@ -343,6 +343,34 @@ def USEsteganoKrypto():
 	print 'Schlüsselwort: ' + key
 	print 'Entschlüsselt: ' + OTP.decode(geheimtext,key)
 
+def main():
+	modus = ''
+	while modus != 'q':
+		os.system('clear')
+		print 'Keygenerierung [0]'
+		print 'Codieren (Ergebenis wird abgespeichert) [1]'
+		print 'Decodieren (Parameter werden ausgelesen) [2]'
+		print 'Analyse der Funktionalität [3]'
+		print 'Decodierung mit zufälligen Parametern [4]'
+		print 'Codierung ohne Key Generierung [5]'
+		print 'Steganokryptographie [6]'
+		modus = raw_input(': ')
+		os.system('clear')
+		if modus == '0':
+			keyGen()
+		elif modus == '1':
+			esrif()
+		elif modus == '2':
+			desrif()
+		elif modus == '3':
+			analyse()
+		elif modus == '4':
+			RaDeCAn()
+		elif modus == '5':
+			Execute_EnWiKeGo()
+		elif modus == '6':
+			USEsteganoKrypto()
+
 # keyGen()
 # esrif()
 # decoden()
@@ -352,3 +380,5 @@ def USEsteganoKrypto():
 # RaDeCAn()
 # USEsteganoKrypto()
 # desrif()
+
+main()
