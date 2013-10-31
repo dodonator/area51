@@ -162,6 +162,7 @@ class noCryptoFunctions(object):
 		hour = t[3]
 		minute = t[4]
 		second = t[5]
+		second = second - (second % 5) / 5
 		counter = second + (minute*60) + (hour*3600)
 		stempel = str(year) + '-' + str(month) + '-' + str(day)
 		return [stempel,counter]
