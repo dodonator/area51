@@ -306,6 +306,17 @@ def Execute_EnWiKeGo():
 	print 'Schlüssel:  ' + key
 	print 'Geheimtext: ' + OTP.enWiKeGe(klartext,key)
 	print (12 + len(klartext)) * '#'
+
+def USEsteganoKrypto():
+	OTP = oneTimePad()
+	klartext = raw_input('Klartext eingeben: ')
+	klartextLaenge = len(klartext)
+	text = 'Geheimtext der Länge ' + str(klartextLaenge) + ' eingeben: '
+	geheimtext = raw_input(text)
+	key = OTP.steganoKrypto(klartext,geheimtext)
+	print 'Schlüsselwort: ' + key
+	print 'Entschlüsselt: ' + OTP.decode(geheimtext,key)
+
 # keyGen()
 # esrif()
 # decoden()
@@ -313,3 +324,4 @@ def Execute_EnWiKeGo():
 # analyse()
 # Execute_EnWiKeGo()
 # RaDeCAn()
+# USEsteganoKrypto()
