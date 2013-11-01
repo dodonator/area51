@@ -5,13 +5,14 @@ import random
 import getpass
 import time
 import datetime
+import sys
 
 
 os.system('clear')
 class oneTimePad(object):
 	def __init__(self):
 		NCF = noCryptoFunctions()
-		alphabet = NCF.ALPHABET()
+		self.alphabet = NCF.alphabetGenerierung()
 
 	def steganoKrypto(self,klartext,geheimtext):
 		'''
@@ -62,7 +63,7 @@ class oneTimePad(object):
 		key       -- Beinhaltet den erzeugten Schlüssel als String.
 		keyArray  -- Beinhaltet den erzeugten Schlüssel als Liste.
 		keyLaenge -- Beinhaltet die Länge des erzeugten Schlüssels als Integer.
-		
+
 		'''
 		keyArray = []
 		key = ''
@@ -93,7 +94,7 @@ class oneTimePad(object):
 			geheimtext += tmpG
 		return geheimtext
 
-	def encode(self,klartext):
+	def encode(self,klartext): # Codiert den eingegebenen String
 		'''
 		Create a random One-Time-Pad and encode the input strings
 		'''
@@ -201,20 +202,6 @@ class noCryptoFunctions(object):
 		f1.close()
 		return filename
 
-	def dateiZugriffLaden(self,filename):
-		f1 = open(filename,'r')
-		result = f1.read()
-		f1.close()
-		return result
-
-	def LadeRoutine(self,ID,typ,year,month,day):
-		foldername = str(year) + '-' + str(month) + '-' + str(day) + '/' + str(ID)
-		currentDirectory = os.getcwd()
-		filename = currentDirectory + '/' + foldername + '/' + typ.upper() + '--' + ID + '.' + typ
-		result = self.dateiZugriffLaden(filename)
-		return result
-
-
 	def speicherRoutine(self,inhalt,typ):
 		currentDirectory = os.getcwd()
 		datumsStempel1 = self.datumsStempel()
@@ -233,6 +220,19 @@ class noCryptoFunctions(object):
 		stempel = str(datumsStempel1[1])
 		filename = self.dateiZugriffSpeichern(stempel,foldername,inhalt,typ)
 		return ID
+
+	def dateiZugriffLaden(self,filename):
+		f1 = open(filename,'r')
+		result = f1.read()
+		f1.close()
+		return result
+
+	def LadeRoutine(self,ID,typ,year,month,day):
+		foldername = str(year) + '-' + str(month) + '-' + str(day) + '/' + str(ID)
+		currentDirectory = os.getcwd()
+		filename = currentDirectory + '/' + foldername + '/' + typ.upper() + '--' + ID + '.' + typ
+		result = self.dateiZugriffLaden(filename)
+		return result
 
 	def sonderzeichen(self):
 		sonderZ1 = range(32,65)
@@ -276,7 +276,7 @@ def RandomDecodierer(): #Random Decode Auswertung
 		YN = raw_input('Ergibt der zufällig erzeugte Klartext Sinn (Y/N): \n')
 		if YN == 'Y' or YN == 'y':
 			trueCounter += 1
-		elif YN == 'N' or YN == 'n':
+		elif YN == 'N' or YN == 'n' or YN == '':
 			falseCounter += 1
 		os.system('clear')
 	print 'Sinn:   ' + str(trueCounter)
@@ -349,7 +349,7 @@ def USE_CodierungMitManuellerKeyEingabe():
 	print (12 + len(klartext)) * '#'
 	print 'Klartext:   ' + klartext
 	print 'Schlüssel:  ' + key
-	print 'Geheimtext: ' + OTP.enWiKeGe(klartext,key)
+	print 'Geheimtext: ' + OTP.CodiererMitManuellerKeyEingabe(klartext,key)
 	print (12 + len(klartext)) * '#'
 
 def USE_steganoKrypto():
@@ -375,19 +375,28 @@ def main():
 		print 'Steganokryptographie [6]'
 		modus = raw_input(': ')
 		os.system('clear')
+		if modus == 'q':
+			nachricht = 'Auf Wiedersehen!'
+			abstand = int((columns - len(nachricht))/2)*' '
+			print 3*'\n'
+			print abstand + nachricht + abstand
+			print 3*'\n'
+			sys.exit()
 		if modus == '0':
-			keyGen()
+			USE_keyGen()
 		elif modus == '1':
-			esrif()
+			CodiererMitSpeicherFunktion()
 		elif modus == '2':
-			desrif()
+			DecodiererMitLadeFunktion()
 		elif modus == '3':
-			analyse()
+			USE_analyse()
 		elif modus == '4':
-			RaDeCAn()
+			RandomDecodierer()
 		elif modus == '5':
-			Execute_EnWiKeGo()
+			USE_CodierungMitManuellerKeyEingabe()
 		elif modus == '6':
-			USEsteganoKrypto()
+			USE_steganoKrypto()
+		warteAufEingabe = raw_input('Bitte zum Fortfahren "Enter" drücken')
+columns = 112 # Die Anzahl Zeichen, die auf dem Terminal in eine Zeile passen.
 
 main()
