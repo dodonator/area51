@@ -2,10 +2,10 @@
 # Momentan in der Entwicklung befindliche Version!
 import os
 import random
-import getpass
 import time
 import datetime
 import sys
+import uuid
 
 
 os.system('clear')
@@ -69,7 +69,6 @@ class oneTimePad(object):
 		'''
 		keyArray = []
 		key = ''
-		keyLaenge = 0
 
 		for i in range(laengeKlartext):
 			tmp = random.choice(self.alphabet)
@@ -119,17 +118,13 @@ class oneTimePad(object):
 		key = keyFoo[0]
 		keyArray = keyFoo[1]
 		klartextArray = list(klartext)
-		geheimtextArray = []
 		geheimtext = ''
 		
 		for i in range(laengeKlartext): # Diese for-Schleife kuemmert sich um die Codierung
 			tmpKlartextIndex = self.alphabet.index(klartextArray[i])
 			tmpKeyIndex = self.alphabet.index(keyArray[i])
 			tmpG = self.alphabet[(tmpKlartextIndex + tmpKeyIndex) % len(self.alphabet)]
-			geheimtextArray.append(tmpG)
-
-		for element in geheimtextArray: # Diese for-Schleife wandelt den Array in einen String
-			geheimtext += element
+			geheimtext += str(tmpG)
 
 		return [geheimtext,key]
 
@@ -137,7 +132,6 @@ class oneTimePad(object):
 		laengeGeheimtext = len(geheimtext)
 		keyArray = list(key)
 		geheimArray = list(geheimtext)
-		klartextArray = []
 		klartext = ''
 
 		for i in range(laengeGeheimtext):
@@ -146,13 +140,10 @@ class oneTimePad(object):
 			tmpDifferenz = tmpGeheimtextIndex - tmpKeyIndex
 			
 			if tmpDifferenz >= 0:
-				klartextArray.append(self.alphabet[tmpDifferenz])
+				klartext += self.alphabet[tmpDifferenz]
 			else:
 				tmpDifferenz = tmpGeheimtextIndex + len(self.alphabet) - tmpKeyIndex
-				klartextArray.append(self.alphabet[tmpDifferenz])
-
-		for element in klartextArray:
-			klartext += element
+				klartext += self.alphabet[tmpDifferenz]
 
 		return klartext
 
@@ -172,11 +163,11 @@ class oneTimePad(object):
 			else:
 				falseCounter += 1
 		
-		result = [trueCounter,falseCounter]
-		
-		return result
+		return [trueCounter,falseCounter]
 
 class noCryptoFunctions(object):
+	def __init__(self):
+		self.prozessID = uuid.uuid4()
 
 	def kompression(self,Liste):
 		resultListe = []
@@ -240,27 +231,26 @@ class noCryptoFunctions(object):
 		
 		return filename
 
-	def speicherRoutine(self,inhalt,typ):
+	def speicherRoutine(self,inhalt,typ,ID):
 		currentDirectory = os.getcwd()
 		datumsStempel1 = self.datumsStempel()
-		foldername = str(datumsStempel1[0])
-		ID = datumsStempel1[1]
+		foldername = datumsStempel1[0]
 		
-		if foldername not in os.listdir(os.getcwd()):
-			os.system('mkdir ' + foldername)
+		if not os.path.exists(os.getcwd()+'/'+foldername):
+			os.makedirs(os.getcwd()+'/'+foldername)
 		else:
 			pass
 		
-		IDfolder = 'mkdir ' + currentDirectory + '/' + str(foldername)  + '/' + str(ID)
+		IDfolder = currentDirectory + '/' + str(foldername)  + '/' + str(ID)
 		
-		if IDfolder not in os.listdir(os.getcwd() + '/' + str(foldername)):
-			os.system(IDfolder)
+		if not os.path.exists(IDfolder):
+			os.makedirs(IDfolder)
 		else:
 			pass
 		
 		foldername = str(foldername) + '/' + str(ID)
 		stempel = str(datumsStempel1[1])
-		filename = self.dateiZugriffSpeichern(stempel,foldername,inhalt,typ)
+		filename = self.dateiZugriffSpeichern(str(ID),foldername,inhalt,typ)
 		
 		return ID
 
@@ -366,12 +356,13 @@ def CodiererMitSpeicherFunktion(): #Encoding Save Results in Files
 	
 	OTP = oneTimePad()
 	NCF = noCryptoFunctions()
+	ID = NCF.prozessID
 	klartext = raw_input('Klartext eingeben: \n')
 	tmpResult = OTP.encode(klartext)
 	geheimtext = tmpResult[0]
 	key = tmpResult[1]
-	IDg = NCF.speicherRoutine(geheimtext,'g')
-	IDk = NCF.speicherRoutine(key,'s')
+	IDg = NCF.speicherRoutine(geheimtext,'g',ID)
+	IDk = NCF.speicherRoutine(key,'s',ID)
   	os.system('clear')
 	
 	if IDg == IDk:
