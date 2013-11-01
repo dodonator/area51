@@ -72,7 +72,6 @@ class oneTimePad(object):
 		'''
 		keyArray = []
 		key = ''
-		keyLaenge = 0
 
 		for i in range(laengeKlartext):
 			tmp = random.choice(self.alphabet)
@@ -132,9 +131,7 @@ class oneTimePad(object):
 			tmpKeyIndex = self.alphabet.index(keyArray[i])
 			tmpG = self.alphabet[(tmpKlartextIndex + tmpKeyIndex) % len(self.alphabet)]
 			geheimtextArray.append(tmpG)
-
-		for element in geheimtextArray: # Diese for-Schleife wandelt den Array in einen String
-			geheimtext += element
+			geheimtext += str(tmpG)
 
 		return [geheimtext,key]
 
@@ -152,12 +149,11 @@ class oneTimePad(object):
 			
 			if tmpDifferenz >= 0:
 				klartextArray.append(self.alphabet[tmpDifferenz])
+				klartext += self.alphabet[tmpDifferenz]
 			else:
 				tmpDifferenz = tmpGeheimtextIndex + len(self.alphabet) - tmpKeyIndex
 				klartextArray.append(self.alphabet[tmpDifferenz])
-
-		for element in klartextArray:
-			klartext += element
+				klartext += self.alphabet[tmpDifferenz]
 
 		return klartext
 
@@ -177,9 +173,7 @@ class oneTimePad(object):
 			else:
 				falseCounter += 1
 		
-		result = [trueCounter,falseCounter]
-		
-		return result
+		return [trueCounter,falseCounter]
 
 class noCryptoFunctions(object):
 	def __init__(self):
