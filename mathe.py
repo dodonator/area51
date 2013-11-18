@@ -91,6 +91,15 @@ def mainDodo(zahl):
 		if I(element,werte['s3QP']):
 			werte['s4'].append(element)
 	return werte['s4']
+'''
+	werte['T(x)'] = T(zahl)
+	werte['s5'] = []
+	for element in werte['s4']:
+		if T(int(element)) == werte['T(x)']:
+			werte['s5'].append(element)
+	
+	return werte['s5']
+'''
 
 x = int(raw_input('Bitte Zahl eingeben: \n'))
 r = mainDodo(x)
