@@ -1,4 +1,22 @@
 import random
+import math as crystalMath
+
+
+func = random.randint
+
+def med(array):
+	l = len(array)
+	i = l/2
+	return array[i]
+
+
+def avg(array):	
+	s = 0
+	l = len(array)
+	for x in array:
+		s += x
+	return float(float(s)/float(l))
+
 
 def delete(array,ind):
 	result = []
@@ -10,9 +28,9 @@ def delete(array,ind):
 	return result
 
 
-def groups(array,l):
+def groups(array,l): # racism
 	result = []
-	for i in range(len(array)-l):
+	for i in range(len(array)-l+1):
 		tmp = []
 		for i2 in range(l):
 			tmp.append(array[i+i2])
@@ -20,11 +38,11 @@ def groups(array,l):
 	return result
 
 
-def create(l):
+def create(l, func):
 	result = []
 	array = range(l)
 	for i in range(l):
-		r = random.randint(0,len(array)-1)
+		r = func(0,len(array) - 1)
 		result.append(array[r])
 		array = delete(array,r)
 	return result
@@ -49,27 +67,24 @@ def listToString(array):
 	return result
 		
 
-x = 10
-y = 10
-l = 2
+x = 25
+y = 5000
+l = 5
 
 Result = [] 
 Groups = []
 Number = []
-tmpG = []
+tamponG = []
 
 for i in range(y):
-	Result.append(create(x))
+	Result.append(create(x,func))
 
 for element in Result:
 	tmp = groups(element,l)
 	for el in tmp:
-		tmpG.append(el)
+		tamponG.append(el)
 
-print tmpG
-
-
-for element in tmpG:
+for element in tamponG:
 	name = listToString(element)
 	if name not in Groups:
 		Groups.append(name)
@@ -80,5 +95,16 @@ for element in tmpG:
 	else:
 		raise Exception('Unexpexted Error')
 
-for i in range(len(Groups)):
-	print Groups[i],Number[i]
+# for i in range(len(Groups)): print Groups[i],Number[i]
+
+print len(tamponG)
+print len(Groups)
+print ''
+print 'x: ' + str(x)
+print 'y: ' + str(y)
+print 'l: ' + str(l)
+print ''
+print 'Max: ' + str(max(Number))
+print 'Average: ' + str(avg(Number))
+print 'Median: ' + str(med(Number))
+print 'Min: ' + str(min(Number))
