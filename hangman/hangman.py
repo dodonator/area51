@@ -72,15 +72,14 @@ def ratenRelativ():
 		indexList.append(tmp)
 	
 	r = random.randint(0,sum(haeufigkeit))
-	
-	print r
 
-	for element in indexList:		
+	for (index, element) in enumerate(indexList):		
 		if element > r:
-			result = alphabet[indexList.index(element)].upper()
+			result = alphabet[index].upper()			
+			break
 	
-	print result
-	x = raw_input(":")	
+	x = raw_input(":")
+	
 	return result
 
 eingabe = wortEingabeManuell
