@@ -2,7 +2,7 @@
 import random
 import os
 # ToDo:
-# * Fehlerzähler (Hangman) [check]
+# * Fehlerzähler (Hangman)
 # * [Ausgeschlossene Buchstaben]
 # ** ausgeschlossen, weil falsch
 # ** ausgeschlossen, weil richtig
@@ -20,6 +20,10 @@ import os
 
 haeufigkeitsTabellenDateiName = "haeufigkeitstabelleGER.csv"
 HTDN = haeufigkeitsTabellenDateiName
+wortListenDateiName = "wortliste.txt"
+WLDN = wortListenDateiName
+
+# Eingabefunktionen:
 
 def wortEingabeManuell():
 	result = raw_input("Bitte geben sie das zu ratende Wort ein: ")	
@@ -27,14 +31,18 @@ def wortEingabeManuell():
 	os.system("clear")	
 	return result
 
-def wortEingabeAuto(filename):
+def wortEingabeAuto():
+	filename = WLDN
 	f1 = open(filename,'r')
-	content = f1.read()
+	content = f1.read().upper()
 	f1.close()
-	content.split(';')
-	wort = random.choice(wort)
+	content = content.split('\n')
+	content.pop()
+	wort = random.choice(content)
 	return wort
 
+# Ratefunktionen:
+	
 def ratenManuell():
 	char = raw_input("Raten sie einen Buchstaben: ")
 	if len(char) != 1:
@@ -82,9 +90,92 @@ def ratenRelativ():
 	
 	return result
 
-eingabe = wortEingabeManuell
-raten = ratenRelativ
+# Hier können die Funktionen eingegeben werden, die
+# benutzt werden sollen:
+eingabe = wortEingabeAuto
+raten = ratenManuell
 
+def woerterHinzufuegen(wort,av = False):
+	filename = WLDN
+	f1 = open(filename,"r")
+	content = f1.read().upper()
+	f1.close()
+	content = content.split("\n")
+	
+	if av:
+		scores = {}
+		for element in content:
+			scores[element] = bewertung(element,True)
+		
+		b = bewertung(wort,True)
+		
+		durchschnitt = 0
+		summe = 0
+		counter = 0
+		for element in scores:
+			summe += scores[element]
+			counter += 1
+		durchschnitt = float(summe)/float(counter)
+		
+		if b <= durchschnitt:
+			result = "\n" + wort
+		else:
+			result = ''
+	else:
+		result = "\n" + wort
+	
+	f1 = open(filename,"a")
+	f1.write(result)
+	f1.close()
+
+def bewertung(wort,relScore=False):
+	
+	wort = wort.upper()
+	
+	f1 = open(HTDN,"r")
+	ht = f1.read().upper()
+	f1.close()
+	
+	lines = ht.split("\n")
+	lines.pop()
+	
+	ht = {}
+	for i in range(len(lines)):
+		tmp = lines[i].split(";")
+		ht[tmp[0]] = int(tmp[1])
+	
+	# ht ist nun eine Häufigkeitstabelle
+	
+	# Wiederholungen von Buchstaben:
+	w = 1
+	chars = []
+	for tmp in wort:
+		if tmp in chars:
+			w += 1
+		else:
+			chars.append(tmp)
+	# Länge eines Wortes:
+	l = len(wort)
+	
+	# Seltenheit der Buchstaben:
+	s = 0
+	for char in wort:
+		s += ht[char]
+	
+	print "w: " + str(w)
+	print "s: " + str(s)
+	print "l: " + str(l)
+	
+	# Scoring:
+	if relScore:
+		result = float(s+w)/float(l)
+	else:
+		result = 2000 - (s + w + l)
+	
+	print "r: " + str(result)
+	
+	return result
+	
 def fehlerStatus(maximum,current):
 	if current != maximum:	
 				result = "[" + current*"*" + (maximum-current)*" " + "] " + str(current)	
@@ -147,12 +238,16 @@ def main(wort,maximum = 10):
 			fehlerCounter += 1
 		os.system("clear")
 
-	if gewonnen:		
+	if gewonnen:
 		f1 = open("gewonnen.txt","r")
 		content = f1.read()
 		f1.close()
-		print content	
+		print content
+	
+	woerterHinzufuegen(wort.upper(),True)
 
-wort = eingabe()
-main(wort)
-
+# wort = eingabe()
+# print wort
+# main(wort)
+# bewertung(raw_input(":"),True)
+x = raw_input("")
