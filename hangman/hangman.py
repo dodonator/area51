@@ -1,22 +1,11 @@
 # coding: utf-8
 import random
 import os
-# ToDo:
-# * Fehlerzähler (Hangman)
-# * [Ausgeschlossene Buchstaben]
-# ** ausgeschlossen, weil falsch
-# ** ausgeschlossen, weil richtig
-# * Ratebuchstaben
-# ** erratene Buchstaben
-# ** noch nicht erratene Buchstaben
-# * Internes Alphabet
-# * Wortliste?
-# * Bewertungsalgorithmus für Wörter
-# ** Länge des Wortes
-# ** Häufigkeit der Buchstaben
-# ** Seltenheit der Buchstaben
-# * Interne Häufigkeitstabelle
-# * 
+# ToDO:
+# ratenRelativ richtig machen
+# configurationsdatei einbinden
+# Dokumentation!
+# und vieles mehr...
 
 haeufigkeitsTabellenDateiName = "haeufigkeitstabelleGER.csv"
 HTDN = haeufigkeitsTabellenDateiName
