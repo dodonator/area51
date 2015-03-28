@@ -5,6 +5,10 @@ import os
 # ratenRelativ richtig machen
 # configurationsdatei einbinden
 # Dokumentation!
+# Windowskompatibilität
+# Wortlistensäuberung
+# Warum funktioniert das Eingeben von WÖrtern nicht?
+# Themenspezifische Wortlisten (pokemon, personen und ähnliches)
 # und vieles mehr...
 
 haeufigkeitsTabellenDateiName = "haeufigkeitstabelleGER.csv"
@@ -16,16 +20,17 @@ WLDN = wortListenDateiName
 
 def wortEingabeManuell():
 	result = raw_input("Bitte geben sie das zu ratende Wort ein: ")	
-	result = result.upper()
-	os.system("clear")	
+	result = result.upper().strip()
+	os.system("cls") # Windows
+	# os.system("clear") # Unix
 	return result
-
+	
 def wortEingabeAuto():
 	filename = WLDN
 	f1 = open(filename,'r')
 	content = f1.read().upper()
 	f1.close()
-	content = content.split('\n')
+	content = content.split('\n').strip()
 	content.pop()
 	wort = random.choice(content)
 	return wort
@@ -33,11 +38,8 @@ def wortEingabeAuto():
 # Ratefunktionen:
 	
 def ratenManuell():
-	char = raw_input("Raten sie einen Buchstaben: ")
-	if len(char) != 1:
-		return char[0]
-	else:
-		return char.upper()
+	wort = raw_input("Raten sie einen Buchstaben: ")
+	return wort.upper()
 
 def ratenZufallM():
 	alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -81,10 +83,11 @@ def ratenRelativ():
 
 # Hier können die Funktionen eingegeben werden, die
 # benutzt werden sollen:
-eingabe = wortEingabeAuto
+eingabe = wortEingabeManuell
 raten = ratenManuell
 
 def woerterHinzufuegen(wort,av = False):
+	result = av
 	filename = WLDN
 	f1 = open(filename,"r")
 	content = f1.read().upper()
@@ -106,16 +109,21 @@ def woerterHinzufuegen(wort,av = False):
 			counter += 1
 		durchschnitt = float(summe)/float(counter)
 		
-		if b <= durchschnitt:
-			result = "\n" + wort
+		if b <= durchschnitt and wort not in content:
+			con = "\n" + wort
+			result = True
 		else:
-			result = ''
+			con = ''
+			result = False
 	else:
-		result = "\n" + wort
+		con = "\n" + wort
+		result = False
 	
 	f1 = open(filename,"a")
-	f1.write(result)
+	f1.write(con)
 	f1.close()
+	
+	return result
 
 def bewertung(wort,relScore=False):
 	
@@ -151,9 +159,9 @@ def bewertung(wort,relScore=False):
 	for char in wort:
 		s += ht[char]
 	
-	print "w: " + str(w)
-	print "s: " + str(s)
-	print "l: " + str(l)
+	# print "w: " + str(w)
+	# print "s: " + str(s)
+	# print "l: " + str(l)
 	
 	# Scoring:
 	if relScore:
@@ -161,23 +169,25 @@ def bewertung(wort,relScore=False):
 	else:
 		result = 2000 - (s + w + l)
 	
-	print "r: " + str(result)
+	# print "r: " + str(result)
 	
 	return result
 	
 def fehlerStatus(maximum,current):
+
 	if current != maximum:	
 				result = "[" + current*"*" + (maximum-current)*" " + "] " + str(current)	
 	else:
 		result = "You lose"
 
 	print result
-
-def main(wort,maximum = 10):
+		
+def main(wort,maximum = 10, av = False):
 	wort = wort.upper()	
 	wortA = list(wort)
 	rate = []
 	benutzteBuchstaben = []
+	benutzteWorte = []
 	richtigeBuchstaben = []	
 	
 	for i in range(len(wortA)):
@@ -199,44 +209,80 @@ def main(wort,maximum = 10):
 
 		for element in rate:
 			print element ,
-		print ''
+		print '\n'
+		
 		print "Benutzte Buchstaben: "
-
 		for element in benutzteBuchstaben:
 			print element ,
-		print ''
+		print '\n'
+		
+		print "Benutzte Wörter: "
+		for element in benutzteWorte:
+			print element + ' ' ,
+		print '\n'
+		
 		print "Fehlerzähler: "
 		fehlerStatus(maximum,fehlerCounter)
+		print '\n'
 
 		tmp = raten()
-		if tmp not in benutzteBuchstaben:
+		if len(tmp) == 1:		
+			if tmp not in benutzteBuchstaben:
 
-			if tmp in wortA:
+				if tmp in wortA:
 
-				for i in range(len(wort)):
+					for i in range(len(wort)):
 
-					if wortA[i] == tmp:
-						rate[i] = tmp
-				benutzteBuchstaben.append(tmp)
-				richtigeBuchstaben.append(tmp)
+						if wortA[i] == tmp:
+							rate[i] = tmp
+					benutzteBuchstaben.append(tmp)
+					richtigeBuchstaben.append(tmp)
 
+				else:
+					fehlerCounter += 1
+					benutzteBuchstaben.append(tmp)
 			else:
 				fehlerCounter += 1
-				benutzteBuchstaben.append(tmp)
+		elif len(tmp) == len(wort):
+			if tmp == wort:
+				gewonnen = True
+			else:
+				benutzteWorte.append(tmp)
+				break
 		else:
 			fehlerCounter += 1
-		os.system("clear")
-
+			
+		os.system("cls") # Windows
+		# os.system("clear") # Unix
+		
 	if gewonnen:
+		print "Das Wort war: " + wort
 		f1 = open("gewonnen.txt","r")
 		content = f1.read()
 		f1.close()
 		print content
 	
-	woerterHinzufuegen(wort.upper(),True)
+	tmp = woerterHinzufuegen(wort.upper(),av)
+	if eingabe == wortEingabeManuell and tmp:
+		print "Das eingegebene Wort war so gut, "
+		print "dass es in die Wortliste aufgenom-"
+		print "men wurde."
 
-# wort = eingabe()
-# print wort
-# main(wort)
-# bewertung(raw_input(":"),True)
-x = raw_input("")
+x = ""
+while x != "q":
+	# os.system("clear") # Unix
+	os.system("cls") # Windows
+	if x != "q":
+		wort = eingabe()
+		main(wort,10,True)
+		x = raw_input("Drücken sie 'q' zum verlassen: ")
+		r = random.randint(0,10)
+		if r < 6:
+			eingabe = wortEingabeAuto
+		else:
+			eingabe = wortEingabeManuell
+	else:
+		break
+	
+	
+	
