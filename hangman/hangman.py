@@ -9,6 +9,7 @@ import os
 # Wortlistensäuberung
 # Warum funktioniert das Eingeben von WÖrtern nicht?
 # Themenspezifische Wortlisten (pokemon, personen und ähnliches)
+# Die main() Funktion entflechten
 # und vieles mehr...
 
 haeufigkeitsTabellenDateiName = "haeufigkeitstabelleGER.csv"
@@ -19,6 +20,11 @@ WLDN = wortListenDateiName
 # Eingabefunktionen:
 
 def wortEingabeManuell():
+	"""
+	Hier kann der Benutzer selber das Wort
+	eingeben, dass geraten werden soll. Nach
+	der Eingabe wird die Anzeige gelöscht.
+	"""
 	result = raw_input("Bitte geben sie das zu ratende Wort ein: ")	
 	result = result.upper().strip()
 	os.system("cls") # Windows
@@ -26,6 +32,11 @@ def wortEingabeManuell():
 	return result
 	
 def wortEingabeAuto():
+	"""
+	Hier wird aus einer, vorher definierten Datei,
+	eine Wortliste gezogen, aus der zufällig ein
+	Wort ausgesucht und zurückgegeben wird.
+	"""
 	filename = WLDN
 	f1 = open(filename,'r')
 	content = f1.read().upper()
@@ -38,16 +49,33 @@ def wortEingabeAuto():
 # Ratefunktionen:
 	
 def ratenManuell():
+	"""
+	In dieser Funktion gibt der User ein Wort
+	oder einen Buchstaben ein. Die Verarbeitung
+	erfolgt hier noch nicht.
+	"""
 	wort = raw_input("Raten sie einen Buchstaben: ")
 	return wort.upper()
 
 def ratenZufallM():
+	"""
+	In dieser Funktion wird durch Zufall geraten,
+	indem ein zufälliger Buchstabe zurückgegeben
+	wird.
+	"""
 	alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	result = random.choice(alphabet)
 	x = raw_input(":")
 	return result
 
 def ratenRelativ():
+	"""
+	In dieser Funktion rät der Computer die Buchstaben
+	anhand einer vorher definierten Häufigkeitstabelle.
+	Somit soll das typische Vorgehen eines Menschen, wenn
+	er Hangman spielt, nämlich zuerst die häufigen Buch-
+	staben zu raten, simuliert werden.
+	"""
 	f1 = open(HTDN,"r")
 	content = f1.read()
 	f1.close()
@@ -87,6 +115,30 @@ eingabe = wortEingabeManuell
 raten = ratenManuell
 
 def woerterHinzufuegen(wort,av = False):
+	"""
+	Formal:
+	
+		woerterHinzufuegen(wort,av = False)
+	
+	Parameter:
+	
+		wort: Wort, das hinzugefügt werden soll
+	
+		av: Boolean der entscheidet ob bei dem
+			Hinzufuegen des Wortes in die Wortliste
+			seine Bewertung beachtet werden soll.
+			Wenn dies so ist, wird dem Wort ein Wert
+			zugewiesen. Nun wird die Wortliste durch-
+			laufen und es wird ebenfalls jedem Wort
+			in der Wortliste ein Wert zugeordnet.
+			Aus den Werten der Wortliste wird ein Durch-
+			schnitt gebildet. Das übergebene Wort wird
+			nur hinzugefügt, wenn seine Wertung <= der
+			Durchschnitt der Wortliste ist. Dies soll
+			dazu sorgen, dass die Wortliste wächst und
+			dem automatischen Raten aus der Wortliste
+			helfen.
+	"""
 	result = av
 	filename = WLDN
 	f1 = open(filename,"r")
@@ -126,7 +178,53 @@ def woerterHinzufuegen(wort,av = False):
 	return result
 
 def bewertung(wort,relScore=False):
+	"""
+	Formal:
 	
+		bewertung(wort,relScore=False)
+	
+	Parameter:
+	
+		wort: Wort, dass bewertet werden soll
+		
+		relScore: Boolean der entscheidet, ob
+				  die Bewertung des Wortes re-
+				  lativ zur Länge des Wortes ist
+				  oder nicht. Der default-Wert
+				  für relSCore ist False.
+	
+	Die Bewertung:
+		
+		Die Bewertung des WOrtes beruht auf drei
+		verschiedenen Kriterien: w, s und l:
+		
+		w: Anzahl an Wiederholungen der Buchstaben
+		   im Wort
+		   (Sollte möglichst niedrig sein.)
+		
+		s: Seltenheitswert der Buchstaben im Wort
+		   (Sollte möglichst niedrig sein.)
+		   
+		l: Länge des Wortes
+		   (Sollte möglichst niedrig sein.)
+		   
+		Die Berechnung der Bewertung aus den drei
+		Kriterien ist abhängig von dem Boolean relScore:
+		
+		relScore = True:
+		
+			result = float(s+w)/float(l)
+			
+		relSCore = False:
+			
+			result = s + w + l
+		
+		Diese Funktion übernimmt noch nicht den Vergleich
+		von zwei Wörtern, weshalb darauf geachtet werden
+		muss, wenn man zwei Wörter vergleichen möchte, dass
+		sie mit der gleichen Formel (relScore muss gleich sein)
+		bewertet werden.
+	"""
 	wort = wort.upper()
 	
 	f1 = open(HTDN,"r")
@@ -167,14 +265,30 @@ def bewertung(wort,relScore=False):
 	if relScore:
 		result = float(s+w)/float(l)
 	else:
-		result = 2000 - (s + w + l)
+		result = s + w + l
 	
 	# print "r: " + str(result)
 	
 	return result
 	
 def fehlerStatus(maximum,current):
-
+	"""
+	Formal:
+		
+		fehlerStatus(maximum,current)
+		
+	Parameter:
+		
+		maximum: Maximalwert an Fehlern, die gemacht
+				 werden dürfen.
+				 
+		current: Aktuelle Zahl an Fehlern die bereits
+				 gemacht wurden.
+				 
+	Diese Funktion ist dafür zuständig einen Balken zu
+	'malen' der anzeigt wie viele Fehler der User schon
+	gemacht hat, und wie viele er sich noch leisten kann.
+	"""
 	if current != maximum:	
 				result = "[" + current*"*" + (maximum-current)*" " + "] " + str(current)	
 	else:
@@ -185,6 +299,7 @@ def fehlerStatus(maximum,current):
 def main(wort,maximum = 10, av = False):
 	wort = wort.upper()	
 	wortA = list(wort)
+	
 	rate = []
 	benutzteBuchstaben = []
 	benutzteWorte = []
@@ -197,6 +312,10 @@ def main(wort,maximum = 10, av = False):
 	gewonnen = False
 
 	while fehlerCounter != maximum:
+		
+		# Anfangs werden mit dem tmpCounter
+		# die Buchstaben gezählt, die der User
+		#  schon erraten hat.
 		tmpCounter = 0
 
 		for element in wortA:
@@ -209,24 +328,42 @@ def main(wort,maximum = 10, av = False):
 
 		for element in rate:
 			print element ,
+		
 		print '\n'
+		
+		# Hier werden die Buchstaben angezeigt,
+		# die der User schon benutzt hat.
 		
 		print "Benutzte Buchstaben: "
 		for element in benutzteBuchstaben:
 			print element ,
 		print '\n'
 		
+		# Hier werden die Wörter angezeigt, die
+		# der User schon benutzt hat.
+		
 		print "Benutzte Wörter: "
 		for element in benutzteWorte:
 			print element + ' ' ,
 		print '\n'
 		
+		# Hier werden die Fehler des Users angezeigt.
+		
 		print "Fehlerzähler: "
 		fehlerStatus(maximum,fehlerCounter)
 		print '\n'
-
-		tmp = raten()
+		
+		# Nun kommt die Verarbeitung
+		
+		tmp = raten() # tmp ist nun das geratene Wort
+		
+		# Hier wird getestet, ob der User einen Buchstaben
+		# oder ein Wort eingegeben hat.
 		if len(tmp) == 1:		
+			
+			# Falls es ein Buchstabe war, wird jetzt getestet,
+			# ob der Buchstabe schon einmal vom User eingegeben
+			# wurde.
 			if tmp not in benutzteBuchstaben:
 
 				if tmp in wortA:
@@ -235,6 +372,7 @@ def main(wort,maximum = 10, av = False):
 
 						if wortA[i] == tmp:
 							rate[i] = tmp
+			
 					benutzteBuchstaben.append(tmp)
 					richtigeBuchstaben.append(tmp)
 
@@ -243,18 +381,28 @@ def main(wort,maximum = 10, av = False):
 					benutzteBuchstaben.append(tmp)
 			else:
 				fehlerCounter += 1
+		
+		# Hier wird getestet, ob das eingegebene Wort
+		# die Länge des gesuchten Wortes hat.
 		elif len(tmp) == len(wort):
+			
+			# Falls die Längen identisch sind wird nun
+			# getestet, ob auch die Wörter gleich sind.
 			if tmp == wort:
 				gewonnen = True
+			
 			else:
 				benutzteWorte.append(tmp)
 				break
+		
 		else:
 			fehlerCounter += 1
 			
 		os.system("cls") # Windows
 		# os.system("clear") # Unix
-		
+	
+	# Hier wird nach dem Spiel geklärt, ob
+	# der User gewonnen hat.
 	if gewonnen:
 		print "Das Wort war: " + wort
 		f1 = open("gewonnen.txt","r")
@@ -262,7 +410,10 @@ def main(wort,maximum = 10, av = False):
 		f1.close()
 		print content
 	
+	# Hier wird nun das eingegebene Wort in
+	# die Wortliste geschrieben
 	tmp = woerterHinzufuegen(wort.upper(),av)
+	
 	if eingabe == wortEingabeManuell and tmp:
 		print "Das eingegebene Wort war so gut, "
 		print "dass es in die Wortliste aufgenom-"
