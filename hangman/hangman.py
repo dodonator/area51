@@ -1,6 +1,7 @@
 # coding: utf-8
 import random
 import os
+import collections
 # ToDO:
 # ratenRelativ richtig machen
 # configurationsdatei einbinden
@@ -27,8 +28,8 @@ def wortEingabeManuell():
 	"""
 	result = raw_input("Bitte geben sie das zu ratende Wort ein: ")	
 	result = result.upper().strip()
-	os.system("cls") # Windows
-	# os.system("clear") # Unix
+	# os.system("cls") # Windows
+	os.system("clear") # Unix
 	return result
 	
 def wortEingabeAuto():
@@ -41,7 +42,7 @@ def wortEingabeAuto():
 	f1 = open(filename,'r')
 	content = f1.read().upper()
 	f1.close()
-	content = content.split('\n').strip()
+	content = content.strip().split('\n')
 	content.pop()
 	wort = random.choice(content)
 	return wort
@@ -176,6 +177,30 @@ def woerterHinzufuegen(wort,av = False):
 	f1.close()
 	
 	return result
+
+def wortListeDrucken(av = False, sortiert = False):
+	f1 = open(WLDN,"r")
+	content = f1.read().upper().split("\n")
+	f1.close()
+	if sortiert:
+		scores = {}
+		for element in content:
+			tmp = bewertung(element)
+			scores[tmp] = element
+
+		print "Verwendete Wortliste: " + WLDN
+
+		oScores = collections.OrderedDict(sorted(scores.items()))
+		for element in oScores:
+			print str(element) + ' : ' + str(oScores[element])
+
+	else:
+
+		print "Wortliste: " + WLDN
+		for element in content:
+			tmp = bewertung(element,av)
+			print element + ' : ' + str(tmp)
+		print ''
 
 def bewertung(wort,relScore=False):
 	"""
@@ -398,8 +423,8 @@ def main(wort,maximum = 10, av = False):
 		else:
 			fehlerCounter += 1
 			
-		os.system("cls") # Windows
-		# os.system("clear") # Unix
+		# os.system("cls") # Windows
+		os.system("clear") # Unix
 	
 	# Hier wird nach dem Spiel geklärt, ob
 	# der User gewonnen hat.
@@ -419,10 +444,11 @@ def main(wort,maximum = 10, av = False):
 		print "dass es in die Wortliste aufgenom-"
 		print "men wurde."
 
+
 x = ""
 while x != "q":
-	# os.system("clear") # Unix
-	os.system("cls") # Windows
+	os.system("clear") # Unix
+	# os.system("cls") # Windows
 	if x != "q":
 		wort = eingabe()
 		main(wort,10,True)
@@ -434,6 +460,6 @@ while x != "q":
 			eingabe = wortEingabeManuell
 	else:
 		break
-	
-	
-	
+
+
+# wortListeDrucken(True,True)
